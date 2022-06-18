@@ -1,6 +1,3 @@
-from audioop import reverse
-
-
 class Item:
     def __init__(self, nome, peso, valor):
         self.__nome = nome
