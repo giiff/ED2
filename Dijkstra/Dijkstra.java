@@ -55,15 +55,6 @@ public class Dijkstra {
 			}
 		}
 		
-		System.out.println("O menor caminho entre os vertices " + verticeInicial.dados + " e " + verticeFinal.dados + " é:");
-		
-		for(int i=0;i< menorCaminho.size();i++) {
-			if (i == menorCaminho.size() - 1) {
-				System.out.print(menorCaminho.get(i).dados);
-			} else {
-				System.out.print(menorCaminho.get(i).dados + " -> ");
-			}
-		}
 		
 	}
 }
