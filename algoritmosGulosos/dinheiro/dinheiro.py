@@ -1,3 +1,4 @@
+import math
 from numpy import double
 
 
@@ -36,16 +37,45 @@ class Saque:
             Dinheiro("Duzentos", 200)]
         self.__dinheiroDecrescente.sort(reverse=True)
 
-    def sacarComMaisNotas(self, quantidadeSacar: double, dinheiroSaque=[], indexDinheiroVez=0):
+    # Solução 1
+    def sacarComMaisNotasIterativo(self, valorSacar: double):
+        dinheiroSaque = []
+        indexVez = 0
+        while(valorSacar > 0):
+            if valorSacar < self.__dinheiroDecrescente[len(self.__dinheiroDecrescente)-1].getValor():
+                return dinheiroSaque
+            dinheiroVez = self.__dinheiroDecrescente[indexVez]
+            if valorSacar < dinheiroVez.getValor():
+                indexVez += 1
+                continue
+            dinheiroSaque.append(dinheiroVez)
+            valorSacar -= dinheiroVez.getValor()
+        return dinheiroSaque
+
+    # Solução 2
+    def sacarComMaisNotasIterativo2(self, valorSacar: double):
+        maiorNota = self.__dinheiroDecrescente[0]
+        dinheiroSaque = []
+        if valorSacar >= maiorNota.getValor():
+            qtdMaiorNota = math.floor(valorSacar / maiorNota.getValor())
+            valorMaioresNotas = qtdMaiorNota * maiorNota.getValor()
+            valorSacar -= valorMaioresNotas
+            for i in range(qtdMaiorNota):
+                dinheiroSaque.append(maiorNota)
+        dinheiroSaque.extend(self.sacarComMaisNotasIterativo(valorSacar))
+        return dinheiroSaque
+
+    # Solução 3
+    def sacarComMaisNotasRecursivo(self, valorSacar: double, dinheiroSaque=[], indexDinheiroVez=0):
         if indexDinheiroVez >= len(self.__dinheiroDecrescente):
             return dinheiroSaque
         dinheiroVez = self.__dinheiroDecrescente[indexDinheiroVez]
-        if quantidadeSacar >= dinheiroVez.getValor():
+        if valorSacar >= dinheiroVez.getValor():
             dinheiroSaque.append(dinheiroVez)
-            quantidadeSacar -= dinheiroVez.getValor()
-        if quantidadeSacar < dinheiroVez.getValor():
+            valorSacar -= dinheiroVez.getValor()
+        if valorSacar < dinheiroVez.getValor():
             indexDinheiroVez += 1
-        if quantidadeSacar > 0:
-            dinheiroSaque = self.sacarComMaisNotas(
-                quantidadeSacar, dinheiroSaque, indexDinheiroVez)
+        if valorSacar > 0:
+            dinheiroSaque = self.sacarComMaisNotasRecursivo(
+                valorSacar, dinheiroSaque, indexDinheiroVez)
         return dinheiroSaque

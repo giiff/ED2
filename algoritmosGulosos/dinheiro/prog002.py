@@ -5,7 +5,7 @@ saque = Saque()
 
 qtdSacar = (double)(input("Digite a quantidade de dinheiro que deseja sacar: R$ "))
 
-dinheiroSacado = saque.sacarComMaisNotasIterativo(qtdSacar)
+dinheiroSacado = saque.sacarComMaisNotasIterativo2(qtdSacar)
 
 print("\n\n##### Dinheiro sacado ####\n")
 dinheiroTexto = ""

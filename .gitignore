@@ -1,0 +1,4 @@
+# Ignorando pycache no git
+/algoritmosGulosos/dinheiro/__pycache__/*
+/algoritmosGulosos/mochila/__pycache__/*
+/algoritmosGulosos/tarefa/__pycache__/*

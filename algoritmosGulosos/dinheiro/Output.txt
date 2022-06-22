@@ -1,8 +1,0 @@
-Digite a quantidade de dinheiro que deseja sacar: R$ 132.0
-
-##### Dinheiro sacado ####
-R$ 100 (Cem reais)
-R$ 20 (Vinte reais)
-R$ 10 (Dez reais)
-R$ 2 (Dois reais)
-##########################
