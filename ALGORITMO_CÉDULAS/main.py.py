@@ -14,7 +14,7 @@ while(valor>0):
         qt_vinte += 1
     elif(valor >= 10):
         valor -= 10
-        qt_valor += 1
+        qt_dez += 1
     elif(valor >= 5):
         valor -= 5
         qt_cinco += 1
