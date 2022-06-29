@@ -1,4 +1,9 @@
-# Solução 1
+''' 
+Solução 1
+
+# Priorizar por tarefa que são maiores
+'''
+
 from tarefas import Tarefa
 
 t4 = Tarefa("T4", 1, 5)
