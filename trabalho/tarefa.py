@@ -11,12 +11,6 @@ class Tarefa:
         self.__fim = fim
         self.__peso = peso
 
-    def __lt__(self, tarefa):
-        if self.__fim < tarefa.getFim():
-            return self
-        else:
-            return tarefa
-
     def getDescricao(self):
         return self.__descricao
 
@@ -33,7 +27,7 @@ class Tarefa:
         return self.__peso
 
     def getGanhoPorTempo(self):
-        return self.getTamanho() / self.getPeso()
+        return self.getPeso() / self.getTamanho()
 
 class Tarefas:
     def __init__(self, tarefas = [Tarefa]):
@@ -41,7 +35,8 @@ class Tarefas:
         
     def getSolucao(self):
         tarefas = self.__tarefas
-        tarefas.sort(key=lambda x: x.getGanhoPorTempo())
+        tarefas.sort(key=lambda x: x.getFim())
+        tarefas.sort(key=lambda x: x.getGanhoPorTempo(), reverse=True)
         solucao = {tarefas[0]}
         anterior = 0
         for i in range(1, len(tarefas), +1):
