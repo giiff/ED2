@@ -1,4 +1,4 @@
-from audioop import reverse
+'''Escalonamento de Intervalo Ponderado'''
 
 
 class Tarefa:
@@ -29,10 +29,11 @@ class Tarefa:
     def getGanhoPorTempo(self):
         return self.getPeso() / self.getTamanho()
 
+
 class Tarefas:
-    def __init__(self, tarefas = [Tarefa]):
+    def __init__(self, tarefas=[Tarefa]):
         self.__tarefas = tarefas
-        
+
     def getSolucao(self):
         tarefas = self.__tarefas
         tarefas.sort(key=lambda x: x.getFim())
