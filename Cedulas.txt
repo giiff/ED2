@@ -1,0 +1,10 @@
+moedas = [100, 50, 25, 5, 1]
+total = 0
+notas = 130
+
+for i in range(len(moedas)):
+    num_moedas = notas // moedas[i]
+    notas -= num_moedas * moedas[i]
+    total += num_moedas
+
+print(total)
