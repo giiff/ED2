@@ -1,0 +1,39 @@
+class Mochila:
+  def __init__(self, peso_objeto = 20):
+        self.__peso_objeto = peso_objeto
+        self.__itens_adicionados = list()
+
+  
+  def adicionar_itens(self, objetos = list()):
+    peso_disponivel = self.__peso_objeto
+    pos = 0
+    objetos.sort(key = lambda i:i.getM(), reverse = True)
+    while peso_disponivel != 0:
+      if objetos[pos].getPeso() <= peso_disponivel:
+        self.__itens_adicionados.append(objetos[pos])
+        peso_disponivel -= objetos[pos].getPeso()
+      else:
+        pos += 1 
+
+  def getItems(self):
+    return self.__itens_adicionados
+class Item:
+  def __init__(self, nome_item, valor_item, peso_item):
+        self.__nome_item = nome_item
+        self.__valor_item = valor_item
+        self.__peso_item = peso_item
+        self.__m = valor_item / peso_item
+
+  def getM(self):
+    return self.__m
+
+  def getPeso(self):
+    return self.__peso_item
+
+  def getNome(self):
+    return self.__nome_item
+M = Mochila()
+M.adicionar_itens([Item("Ouro", 100, 5), Item("Prata", 20, 2), Item("Diamante", 200, 7), Item("Ferro", 5, 1),])
+
+for i in M.getItems():
+  print(i.getNome())
