@@ -10,7 +10,7 @@ class Vagao:
 
     def desocupar(self):
         self.__professor = None
-        self.__ocupado = True
+        self.__ocupado = False
 
     def getCodigo(self):
         return self.__codigo
