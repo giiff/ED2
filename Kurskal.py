@@ -1,10 +1,10 @@
-# -*- coding: UTF-8 -*-
+
 import sys
 
-subgrupo = dict() # Armazena os rotulos de cada grupo Ex.: {A:B,B:B,C:C}, os verties A e B estao no mesmo subconjunto
-classif = dict()  # Armazena a quantidade de elementos rotulados para cada vertices, util para balanceamento dos subconjuntos
+subgrupo = dict() 
+classif = dict()  
 
-# Povoa as variaveis. vertices armazena os vertices existentes. 
+
 def make_set(grafo):
   vertices = list()
   
@@ -16,19 +16,19 @@ def make_set(grafo):
   
   return vertices
 
-# Encontra o rotulo raiz de um elemento 
+
 def find(vertice):
   if subgrupo[vertice] != vertice: 
     subgrupo[vertice] = find(subgrupo[vertice]) 
   return subgrupo[vertice]
 
-# Une dois vertices se eles nao pertencerem ao mesmo subconjunto
+
 def union(vertice1, vertice2):
   v1_rotulo = find(vertice1)
   v2_rotulo = find(vertice2)
   
   if v1_rotulo != v2_rotulo:
-    if classif[v1_rotulo] > classif[v2_rotulo]: # Balanceando os subconjuntos
+    if classif[v1_rotulo] > classif[v2_rotulo]:
       subgrupo[v2_rotulo] = v1_rotulo
       classif[v1_rotulo] += classif[v2_rotulo]
     else:
@@ -43,29 +43,29 @@ def kruskal(grafo, vertices, k_clusters):
 
   for aresta in grafo:
     peso, vertice1, vertice2 = aresta
-    if clusters <= k_clusters: # Verifica se existem k subconjuntos (evita problema caso K seja maior que o possivel de subconjuntos)
+    if clusters <= k_clusters: 
       break
 
-    if find(vertice1) != find(vertice2): #Caso nao pertencerem ao mesmo subconjunto, une os vertices, adiciona a MST e ajusta o contador de conjuntos
+    if find(vertice1) != find(vertice2): 
       union(vertice1, vertice2)
       MST.append(aresta)
       clusters -= 1
   
-# Re-rotula os vertices para serem representados pelos vertices raiz
+
 def rotule(raiz):
   def rerotule(vertice):
     for j in subgrupo.items():
-          if j[1] != j[0] and j[1] == vertice: # Verifica se existem vertices rotulads com o vertice do parametro
-            subgrupo[j[0]] = v  # Re-rotula
+          if j[1] != j[0] and j[1] == vertice: 
+            subgrupo[j[0]] = v  
             rerotule(j[0])
   i = list()
   j = list()
   for v in raiz:
     for i in subgrupo.items(): 
-      if i[1] == v: # Verifica se existem vertices com rotulo sendo o vertice raiz
+      if i[1] == v: 
         rerotule(i[0])
 
-# Ordena os registros para saida
+
 def order_out_data():
   rotulos = list()
   raiz = list()
@@ -89,9 +89,9 @@ def order_out_data():
   
   return rotulos
 
-# Povoa as listas com os dados lidos do arquivo informado
+
 def Dict_Arestas(lista):
-  grafo = list() # Povoa grafo com as arestas existentes e ordenado por seus respectivos pesos
+  grafo = list() 
   
   for j in range(len(lista)):
     i = lista[j].split()
