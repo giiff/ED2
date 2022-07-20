@@ -1,0 +1,275 @@
+from IPython.display import display, HTML
+display(HTML("<style>.container { width:100% !important; }</style>"))
+class Vertice:
+    
+    def __init__(self, valor, direcionado=True):
+        self.__valor = valor
+        self.__direcionado = direcionado
+        self.__arestas = set()
+    
+    def getValor(self):
+        return self.__valor
+    
+    def setValor(self, valor):
+        self.__valor = valor
+        
+    def getArestas(self):
+        return self.__arestas
+    
+    def adicionarAresta(self, aresta):
+        self.__arestas.add(aresta)
+        
+    def getArestasSaida(self):
+        if self.__direcionado == False:
+            return self.__arestas
+        arestasDeSaida = []
+        for aresta in self.__arestas:
+            if aresta.getvOrigem() == self:
+                arestasDeSaida.append(aresta)
+        return arestasDeSaida
+    
+    def getArestasEntrada(self):
+        if self.__direcionado == False:
+            return self.__arestas
+        arestasSaida = []
+        for aresta in self.__arestas:
+            if aresta.getvDestino() == self:
+                arestasSaida.append(aresta)
+        return arestasSaida
+    
+    def getGrau(self):
+        return len(self.getArestasSaida())+ len(self.getArestasEntrada())
+    
+    def getAdjacentes(self, v):
+        listaVerticesAdjacentes = []
+        for arestas_de_saida in v.getArestasSaida():
+            listaVerticesAdjacentes.append(arestas_de_saida.getvDestino())
+        return listaVerticesAdjacentes
+
+    def getMenorValor(self):
+        menor = self.getValor()[0]
+        for a in self.getValor():
+            if a < menor:
+                menor = a
+class Aresta:
+    def __init__(self, vOrigem, vDestino, peso, direcionada=True):
+        self.__vOrigem = vOrigem
+        self.__vDestino = vDestino
+        self.__peso = peso
+        self.__direcionada = direcionada
+        self.__vOrigem.adicionarAresta(self)
+        self.__vDestino.adicionarAresta(self)
+        
+    def getvOrigem(self):
+        return self.__vOrigem
+    def getvDestino(self):
+        return self.__vDestino
+    def getValor(self):
+        return self.__peso
+from collections import deque
+class Grafo:
+    def __init__(self, direcionado=True):
+        self.__vertices = set()
+        self.__arestas  = set()
+        self.__direcionado = direcionado
+        
+    def setVertices(self, vertices):
+        self.__vertices = vertices
+        
+    def setArestas(self, arestas):
+        self.__arestas = arestas
+        
+    def getVertices(self):
+        return self.__vertices
+    
+    def getVerticeByValor(self, valor):
+        for v in self.__vertices:
+            if v.getValor() == valor:
+                return v
+        return None
+    
+    def getArestas(self):
+        return self.__arestas
+    
+    def checkHandShakingLemma(self):
+        somaGraus = 0
+        for v in self.getVertices():
+            somaGraus+= v.getGrau()
+        if somaGraus == len(self.getArestas())*2:
+            return True
+        else:
+            return False
+        
+    def dfs(self, graph, v, visitados=[]):
+        if v not in visitados: # se v nao foi visitado
+            visitados.append(v) # marca vertice como visitado
+        if len(v.getAdjacentes(v)) == 0: # vertice escolhido nao tem adjacentes
+            self.dfs(graph, next(iter(graph.getVertices())), visitados) # chamada recursiva pegando o proximo vertice do set
+        else: # vertice escolhido tem adjacentes
+            for adjacente in v.getAdjacentes(v): #percorre todos os adjacentes a ele
+                if adjacente not in visitados: # se um dos adjacentes nao foi visitado
+                    self.dfs(graph, adjacente, visitados) # chamada recursiva para cada adjacente
+        return visitados
+    
+    def bfs(self, v, visitados = [], fila = deque([])):
+        fila.append(v)  # adiciona o vertice v a fila
+        if v not in visitados:  # se vertice v nao esta em visitados
+            visitados.append(v)  # adiciona vertice v a visitados
+        while fila:  # enquanto houver vertices na fila
+            vertice = fila.popleft()  # tira vertice ja visitado da fila
+            if len(vertice.getArestasSaida()) == 0: # vertice escolhido nao tem adjacentes
+                self.bfs(next(iter(self.getVertices())), visitados, fila) # chamada recursiva pegando o proximo vertice do set   
+            else:
+                for adjacente in vertice.getAdjacentes(v): #percorre todos os adjacentes a ele
+                    if adjacente not in visitados: # se um dos adjacentes nao foi visitado
+                        visitados.append(adjacente)  # insere o adjacente em visitados
+                        self.bfs(adjacente, visitados, fila) # chamada recursiva pegando o proximo vertice do set
+        return visitados  # retorna a lista de visitados  
+    
+    def buscarPorValor(self, valor):
+        for v in self.bfs(next(iter(self.getVertices())), visitados = [], fila = deque([])):
+            if valor == v.getValor():
+                return valor
+        return None
+    
+    def eulerPath(self, lista = [], par = [], impar = []):
+        for v in self.getVertices():
+            lista.append(v.getGrau())
+            
+        for l in lista:
+            if l % 2 == 0:
+                par.append(l)
+            elif l % 2 == 1:
+                impar.append(l)
+                
+        if len(impar) == 2 or len(impar) == 0:
+            return "é um caminho Euler."
+        else:
+            return "não é um caminho Euler."
+        
+    def inserirVertices(self, v):
+        if self.buscarPorValor(v) != v:
+            self.__vertices.add(Vertice(v))
+            return True
+        else:
+            return False
+            
+            
+    def inserirAresta(self, vO, vD, peso = 1, direcionado = True):
+        verticeO = self.getVerticeByValor(vO)
+        verticeD = self.getVerticeByValor(vD)
+        if verticeO and verticeD is None:
+            raise Exception("Esse Vertice nao existe")
+            return False
+        else:
+            self.__arestas.add(Aresta(verticeO, verticeD, peso, direcionado))
+            return True
+        
+        
+    def removerAresta(self, vO, vD, peso, direcionado = True):
+        verticeO = self.getVerticeByValor(vO)
+        verticeD = self.getVerticeByValor(vD)
+        if verticeO and verticeD != None:
+            for aresta in self.getArestas():
+                if verticeO == aresta.getvOrigem() and verticeD == aresta.getvDestino() and peso == aresta.getValor():
+                    self.__arestas.remove(aresta)
+                    return True
+                    
+        return False
+    
+    def removerVertice(self, valor):        
+        para_remover = self.getVerticeByValor(valor)
+        if para_remover == None:
+            pass
+        else:
+            self.getVertices().remove(para_remover)
+            
+            for aresta in self.getArestas():
+                peso = aresta.getValor()
+                vO = aresta.getvOrigem()
+                vD = aresta.getvDestino()
+                
+                if vO == para_remover or vD == para_remover:
+                    break
+            self.removerAresta(vO, vD, peso)
+            
+    def matriz(self):
+        
+        tamanho = len(self.getVertices())
+        mAux = [0] * tamanho
+        m = []
+        for c in range(0, len(mAux)):
+            m.append(mAux.copy())
+            
+        c = 0
+        for aresta in self.getArestas():
+            m[c][c] = aresta.getvOrigem().getValor()
+            m[c] = aresta.getvDestino().getValor()
+            c+=1
+            
+        return m
+                
+
+    def dijkstra(self, origem):
+        vMenorValor = Vertice.getMenorValor()
+        peso = {}
+        antecessor = {}
+        V = []        
+        for v_i in self.getVertices():
+            V.append(v_i) 
+        for v in V:
+            peso[v] = 9999999999999 
+            antecessor[v] = 9999999999999 
+        peso[origem] = 0 
+        while V:        
+            V.remove(vMenorValor) 
+            for e in self.getVertice(vMenorValor).getArestasSaida(): 
+                pesoSomadoParaComparacao = peso[vMenorValor] + e.getPeso() 
+                if pesoSomadoParaComparacao < peso[e.getVerticeDestino().getValor()]:
+                    peso[e.getVerticeDestino().getValor()] = pesoSomadoParaComparacao 
+                    antecessor[e.getVerticeDestino().getValor()] = vMenorValor
+        return peso, antecessor
+
+    def prim(self):
+        vertices = []
+        
+        for v in self.getVertices():
+            vertices.append(v)
+            
+        arvore = []
+        
+        for valor in vertices:
+            menor = 0
+            for aresta in self.getVertice(valor).getArestasSaida():
+                if aresta:
+                    if aresta.getValor() < menor:
+                        menor = aresta.getValor()
+            for aresta in self.getVertice(valor).getArestasSaida():
+                if aresta and aresta.getValor() == menor:
+                    arvore.append( [valor, aresta.getValor(), aresta.getvDestino().getValor()] )
+        return arvore
+    def kruskal(self):
+        resultado = []
+    
+        i = 0
+        e = 0
+        self.grafo = sorted(self.grafo, key=lambda item: item[2])
+        p = []
+        s = []
+
+        for node in range(self.getVerticeByValor):
+            p.append(node)
+            s.append(0)
+
+        while e < (self.getVerticeByValor - 1):
+            node1, node2, weight = self.grafo[i]
+            i = i + 1
+
+            x = self.adicionarAresta(p, node1)
+            y = self.adicionarAresta(p, node2)
+
+
+
+    
+
+
